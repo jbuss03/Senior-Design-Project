@@ -1,0 +1,115 @@
+---
+title: "Industry Weighting"
+author: "Jacob Bussell, Giancarlo Finis, Andrew Finn, Rocco Mathews, Isabella Valentino"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+# COMBINE ORIGINAL PORT W INDUSTRY WEIGHTING
+
+library(dplyr)
+# 1) Identify the industries represented in the selected stocks.
+# 2) Compute total industry scores for those industries.
+# 3) Assign weights based on the industry's proportion of the total industry score.
+# 4) Distribute the industry weight equally among stocks in that industry.
+
+data_2020<-read.csv("C:/Users/17329/Downloads/2021Ports(20).csv")
+
+# Load dataset
+df_E <- data.frame(data_2020[c(2:22),])
+colnames(df_E)<-data_2020[1,]
+
+df_S <- data.frame(data_2020[c(25:45),])
+colnames(df_S)<-data_2020[1,]
+
+df_G <- data.frame(data_2020[c(48:68),])
+colnames(df_G)<-data_2020[1,]
+
+# Ensure 'key' is numeric
+
+df_E <- df_E %>%
+  mutate(Eweighted = as.numeric(Eweighted))
+
+df_S <- df_S %>%
+  mutate(Sweighted = as.numeric(Sweighted))
+
+df_G <- df_G %>%
+  mutate(Gweighted = as.numeric(Gweighted))
+
+# Compute total ESG-weighted scores per industry key (1-11)
+industry_scores_E <- df_E %>%
+  group_by(Ind_key) %>%
+  summarise(
+    E_Score_Sum = sum(Eweighted, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+industry_scores_S <- df_S %>%
+  group_by(Ind_key) %>%
+  summarise(
+    S_Score_Sum = sum(Sweighted, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+industry_scores_G <- df_G %>%
+  group_by(Ind_key) %>%
+  summarise(
+    G_Score_Sum = sum(Gweighted, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+# construct industry-weighted portfolios
+industry_weighted_portfolio <- function(df, score_column, industry_scores, top_n = 20) {
+
+  # Sort and select by ESG score in descending order
+  df_sorted <- df[order(df[[score_column]], decreasing = TRUE), ]
+  df_selected <- head(df_sorted, top_n)
+
+  # Get industry scores for selected stocks
+  df_selected <- df_selected %>%
+    left_join(industry_scores, by = "Ind_key")
+
+  # Determine which industry score to use
+  if (score_column == "Eweighted") {
+    df_selected$Industry_Score <- df_selected$E_Score_Sum
+  } else if (score_column == "Sweighted") {
+    df_selected$Industry_Score <- df_selected$S_Score_Sum
+  } else if (score_column == "Gweighted") {
+    df_selected$Industry_Score <- df_selected$G_Score_Sum
+  }
+
+  # Compute total industry score for selected stocks
+  total_industry_score <- sum(df_selected$Industry_Score, na.rm = TRUE)
+
+  # Assign industry-based weights
+  df_selected$industry_weight <- df_selected$Industry_Score / total_industry_score
+
+  return(df_selected)
+}
+
+# Construct the industry-weighted ESG portfolios
+E_Port_ind <- industry_weighted_portfolio(df_E, "Eweighted", industry_scores_E)
+S_Port_ind <- industry_weighted_portfolio(df_S, "Sweighted", industry_scores_S)
+G_Port_ind <- industry_weighted_portfolio(df_G, "Gweighted", industry_scores_G)
+
+# Print the results (Ticker, Industry Key, Industry-Based Weight)
+print(E_Port_ind[, c("Ticker", "Ind_key", "industry_weight")])
+print(S_Port_ind[, c("Ticker", "Ind_key", "industry_weight")])
+print(G_Port_ind[, c("Ticker", "Ind_key", "industry_weight")])
+
+
+
+```
+
+```{r}
+
+
+```
+
+
