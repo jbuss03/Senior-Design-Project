@@ -1,0 +1,403 @@
+---
+title: "Untitled"
+author: "Jacob Bussell, Giancarlo Finis, Andrew Finn, Rocco Mathews, Isabella Valentino"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(quantmod)
+```
+
+```{r}
+############2020##################
+
+data<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/CompleteData/2020Scores(Complete).csv")
+
+ports<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2020Ports_With_Industry_Weighting.csv")
+
+
+rownames(data)<-data$Ticker
+E_tickers <- ports$E.Portfolio[2:11]
+S_tickers <- ports$E.Portfolio[16:25]
+G_tickers <- ports$E.Portfolio[30:39]
+
+E_weights <- ports$X.12[2:11]
+S_weights <- ports$X.12[16:25]
+G_weights <- ports$X.12[30:39]
+
+#Make E portfolio
+
+getSymbols(E_tickers[1],from="2020-01-01",to="2021-01-01")
+E<-dailyReturn(get(E_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(E_tickers))){
+  getSymbols(E_tickers[i],from="2020-01-01",to="2021-01-01")
+  E<-E+dailyReturn(get(E_tickers[i]))*as.numeric(E_weights[i])
+}
+
+#Make S portfolio
+
+
+getSymbols(S_tickers[1],from="2020-01-01",to="2021-01-01")
+S<-dailyReturn(get(S_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(S_tickers))){
+  getSymbols(S_tickers[i],from="2020-01-01",to="2021-01-01")
+  S<-S+dailyReturn(get(S_tickers[i]))*as.numeric(S_weights[i])
+}
+
+
+#Make G portfolio
+
+
+getSymbols(G_tickers[1],from="2020-01-01",to="2021-01-01")
+G<-dailyReturn(get(G_tickers[1]))*as.numeric(G_weights[1])
+
+
+for(i in c(2:length(G_tickers))){
+  getSymbols(G_tickers[i],from="2020-01-01",to="2021-01-01")
+  G<-G+dailyReturn(get(G_tickers[i]))*as.numeric(G_weights[i])
+}
+
+getSymbols(data$Ticker, from = "2020-01-01",to="2021-01-01")
+data <- data[!rownames(data) %in% c("BRKB", "BLL","SPLK","ATVI","NLOK","WLTW","SIVBQ","MRO","TSCO","VMW","JCI","CHTR"), ]
+
+n<-length(data$Ticker)
+
+betas<-matrix(nrow = n,ncol = 4)
+daily_returns<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = n)
+
+for(i in c(1:n)){
+  
+  model<-lm(dailyReturn(get(data$Ticker[i]))~E+S+G)
+  
+  betas[i,]<-c(data$Ticker[i],as.numeric(model$coefficients[-1]))
+  daily_returns[,i]<-dailyReturn(get(data$Ticker[i]))
+  
+}
+
+RPs<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = 3)
+
+for(i in c(1:length(dailyReturn(get(data$Ticker[i]))))){
+  
+  dat<-data.frame(as.numeric(daily_returns[i,]),as.numeric(betas[,2]),as.numeric(betas[,3]),as.numeric(betas[,4]))
+  colnames(dat)<-c("rt","e_beta","s_beta","g_beta")
+  
+  model<-lm(rt~., data = dat)
+  RPs[i,]<-as.numeric(model$coefficients[-1])
+}
+  
+True_RPs<-colMeans(RPs)
+
+print(data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3]))
+
+RPS2020<-data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3])
+
+cor(data.frame(E,S,G))
+
+```
+
+```{r}
+############2022##################
+
+data<-read.csv("/Users/andrew/Documents/SCHOOL/2025/UPDATEDDATA/2022Scores(Complete).csv")
+
+ports<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2022Ports_With_Industry_Weighting.csv")
+
+
+rownames(data)<-data$Ticker
+E_tickers <- ports$E.Portfolio[2:11]
+S_tickers <- ports$E.Portfolio[16:25]
+G_tickers <- ports$E.Portfolio[30:39]
+
+E_weights <- ports$X.12[2:11]
+S_weights <- ports$X.12[16:25]
+G_weights <- ports$X.12[30:39]
+
+#Make E portfolio
+
+getSymbols(E_tickers[1],from="2022-01-01",to="2023-01-01")
+E<-dailyReturn(get(E_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(E_tickers))){
+  getSymbols(E_tickers[i],from="2022-01-01",to="2023-01-01")
+  E<-E+dailyReturn(get(E_tickers[i]))*as.numeric(E_weights[i])
+}
+
+#Make S portfolio
+
+getSymbols(S_tickers[1],from="2022-01-01",to="2023-01-01")
+S<-dailyReturn(get(S_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(S_tickers))){
+  getSymbols(S_tickers[i],from="2022-01-01",to="2023-01-01")
+  S<-S+dailyReturn(get(S_tickers[i]))*as.numeric(S_weights[i])
+}
+
+
+#Make G portfolio
+
+getSymbols(G_tickers[1],from="2022-01-01",to="2023-01-01")
+G<-dailyReturn(get(G_tickers[1]))*as.numeric(G_weights[1])
+
+
+for(i in c(2:length(G_tickers))){
+  getSymbols(G_tickers[i],from="2022-01-01",to="2023-01-01")
+  G<-G+dailyReturn(get(G_tickers[i]))*as.numeric(G_weights[i])
+}
+
+getSymbols(data$Ticker, from = "2022-01-01",to="2023-01-01")
+data <- data[!rownames(data) %in% c("BLL","SPLK","SIVBQ","TSCO","VMW"), ]
+
+n<-length(data$Ticker)
+
+betas<-matrix(nrow = n,ncol = 4)
+daily_returns<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = n)
+
+for(i in c(1:n)){
+  
+  model<-lm(dailyReturn(get(data$Ticker[i]))~E+S+G)
+  
+  betas[i,]<-c(data$Ticker[i],as.numeric(model$coefficients[-1]))
+  daily_returns[,i]<-dailyReturn(get(data$Ticker[i]))
+  
+}
+
+RPs<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = 3)
+
+for(i in c(1:length(dailyReturn(get(data$Ticker[i]))))){
+  
+  dat<-data.frame(as.numeric(daily_returns[i,]),as.numeric(betas[,2]),as.numeric(betas[,3]),as.numeric(betas[,4]))
+  colnames(dat)<-c("rt","e_beta","s_beta","g_beta")
+  
+  model<-lm(rt~., data = dat)
+  RPs[i,]<-as.numeric(model$coefficients[-1])
+}
+  
+True_RPs<-colMeans(RPs)
+
+print(data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3]))
+
+RPS2022<-data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3])
+
+cor(data.frame(E,S,G))
+```
+
+
+```{r}
+############2023##################
+
+data<-read.csv("/Users/andrew/Documents/SCHOOL/2025/UPDATEDDATA/2023Scores(Complete).csv")
+
+ports<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2023Ports_With_Industry_Weighting.csv")
+
+
+rownames(data)<-data$Ticker
+E_tickers <- ports$E.Portfolio[2:11]
+S_tickers <- ports$E.Portfolio[16:25]
+G_tickers <- ports$E.Portfolio[30:39]
+
+E_weights <- ports$X.12[2:11]
+S_weights <- ports$X.12[16:25]
+G_weights <- ports$X.12[30:39]
+
+#Make E portfolio
+
+getSymbols(E_tickers[1],from="2023-01-01",to="2024-01-01")
+E<-dailyReturn(get(E_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(E_tickers))){
+  getSymbols(E_tickers[i],from="2023-01-01",to="2024-01-01")
+  E<-E+dailyReturn(get(E_tickers[i]))*as.numeric(E_weights[i])
+}
+
+#Make S portfolio
+
+getSymbols(S_tickers[1],from="2023-01-01",to="2024-01-01")
+S<-dailyReturn(get(S_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(S_tickers))){
+  getSymbols(S_tickers[i],from="2023-01-01",to="2024-01-01")
+  S<-S+dailyReturn(get(S_tickers[i]))*as.numeric(S_weights[i])
+}
+
+
+#Make G portfolio
+
+getSymbols(G_tickers[1],from="2023-01-01",to="2024-01-01")
+G<-dailyReturn(get(G_tickers[1]))*as.numeric(G_weights[1])
+
+for(i in c(2:length(G_tickers))){
+  getSymbols(G_tickers[i],from="2023-01-01",to="2024-01-01")
+  G<-G+dailyReturn(get(G_tickers[i]))*as.numeric(G_weights[i])
+}
+
+getSymbols(data$Ticker, from = "2023-01-01",to="2024-01-01")
+data <- data[!rownames(data) %in% c("FISV","SPLK","HZNP","TSCO","VMW","BKI","PXD"), ]
+
+n<-length(data$Ticker)
+
+betas<-matrix(nrow = n,ncol = 4)
+daily_returns<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = n)
+
+for(i in c(1:n)){
+  
+  model<-lm(dailyReturn(get(data$Ticker[i]))~E+S+G)
+  
+  betas[i,]<-c(data$Ticker[i],as.numeric(model$coefficients[-1]))
+  daily_returns[,i]<-dailyReturn(get(data$Ticker[i]))
+  
+}
+
+RPs<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = 3)
+
+for(i in c(1:length(dailyReturn(get(data$Ticker[i]))))){
+  
+  dat<-data.frame(as.numeric(daily_returns[i,]),as.numeric(betas[,2]),as.numeric(betas[,3]),as.numeric(betas[,4]))
+  colnames(dat)<-c("rt","e_beta","s_beta","g_beta")
+  
+  model<-lm(rt~., data = dat)
+  RPs[i,]<-as.numeric(model$coefficients[-1])
+}
+  
+True_RPs<-colMeans(RPs)
+
+print(data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3]))
+
+RPS2023<-data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3])
+
+cor(data.frame(E,S,G))
+```
+
+
+```{r}
+############2024##################
+
+data<-read.csv("/Users/andrew/Documents/SCHOOL/2025/UPDATEDDATA/2024Scores(Complete).csv")
+
+ports<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2024Ports_With_Industry_Weighting.csv")
+
+
+rownames(data)<-data$Ticker
+E_tickers <- ports$E.Portfolio[2:11]
+S_tickers <- ports$E.Portfolio[16:25]
+G_tickers <- ports$E.Portfolio[30:39]
+
+E_weights <- ports$X.12[2:11]
+S_weights <- ports$X.12[16:25]
+G_weights <- ports$X.12[30:39]
+
+#Make E portfolio
+
+
+getSymbols(E_tickers[1],from="2024-01-01",to="2025-01-01")
+E<-dailyReturn(get(E_tickers[1]))*as.numeric(E_weights[1])
+
+#E_tickers<-E_tickers[9]
+#E_weights<-E_weights[-9]
+
+for(i in c(2:length(E_tickers))){
+  getSymbols(E_tickers[i],from="2024-01-01",to="2025-01-01")
+  E<-E+dailyReturn(get(E_tickers[i]))*as.numeric(E_weights[i])
+}
+
+#Make S portfolio
+
+
+getSymbols(S_tickers[1],from="2024-01-01",to="2025-01-01")
+S<-dailyReturn(get(S_tickers[1]))*as.numeric(E_weights[1])
+
+
+for(i in c(2:length(S_tickers))){
+  getSymbols(S_tickers[i],from="2024-01-01",to="2025-01-01")
+  S<-S+dailyReturn(get(S_tickers[i]))*as.numeric(S_weights[i])
+}
+
+
+#Make G portfolio
+
+getSymbols(G_tickers[1],from="2024-01-01",to="2025-01-01")
+G<-dailyReturn(get(G_tickers[1]))*as.numeric(G_weights[1])
+
+for(i in c(2:length(G_tickers))){
+  getSymbols(G_tickers[i],from="2024-01-01",to="2025-01-01")
+  G<-G+dailyReturn(get(G_tickers[i]))*as.numeric(G_weights[i])
+}
+
+getSymbols(data$Ticker, from = "2024-01-01",to="2025-01-01")
+data <- data[!rownames(data) %in% c("TSCO"), ]
+
+n<-length(data$Ticker)
+
+betas<-matrix(nrow = n,ncol = 4)
+daily_returns<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = n)
+
+for(i in c(1:n)){
+  
+  model<-lm(dailyReturn(get(data$Ticker[i]))~E+S+G)
+  
+  betas[i,]<-c(data$Ticker[i],as.numeric(model$coefficients[-1]))
+  daily_returns[,i]<-dailyReturn(get(data$Ticker[i]))
+  
+}
+
+RPs<-matrix(nrow = length(dailyReturn(get(data$Ticker[1]))),ncol = 3)
+
+for(i in c(1:length(dailyReturn(get(data$Ticker[i]))))){
+  
+  dat<-data.frame(as.numeric(daily_returns[i,]),as.numeric(betas[,2]),as.numeric(betas[,3]),as.numeric(betas[,4]))
+  colnames(dat)<-c("rt","e_beta","s_beta","g_beta")
+  
+  model<-lm(rt~., data = dat)
+  RPs[i,]<-as.numeric(model$coefficients[-1])
+}
+  
+True_RPs<-colMeans(RPs)
+
+print(data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3]))
+
+RPS2024<-data.frame("E Risk Prem."= True_RPs[1],"S Risk Prem."= True_RPs[2],"G Risk Prem."= True_RPs[3])
+
+cor(data.frame(E,S,G))
+```
+
+
+```{r}
+RP_Matrix<-data.frame(unname(unlist(RPS2020[1,])),unname(unlist(RPS2022[1,])),unname(unlist(RPS2023[1,])),unname(unlist(RPS2024[1,])))
+
+E<-unname(unlist(RP_Matrix[1,]))
+S<-unname(unlist(RP_Matrix[2,]))
+G<-unname(unlist(RP_Matrix[3,]))
+years<-c("2020","2022","2023","2024")
+plot(
+  years, E,
+  type = "b", col = "orange",
+  ylim = c(-0.005, 0.007),
+  xaxt = "n",                 # Turn off the automatic x-axis
+  xlab = "Year", ylab = "Value",main = "Risk Premiums by Year(exl. 2021)"
+)
+
+# Add the custom x-axis with only the years you want
+axis(1, at = years, labels = years)
+
+# Add the other lines
+lines(years, S, col = "red", type = "b")
+lines(years, G, col = "darkgreen", type = "b")
+
+legend(
+  "topleft",           
+  legend = c("E Risk Premium", "S Risk Premium","G Risk Premium"),
+  col = c("orange", "red","darkgreen"), 
+  lty = 1              
+)
+
+
+```

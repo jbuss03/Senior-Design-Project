@@ -1,0 +1,229 @@
+---
+title: "NewestPortCreation"
+author: "Jacob Bussell, Giancarlo Finis, Andrew Finn, Rocco Mathews, Isabella Valentino"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+##############2020##############
+esg2020<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/CompleteData/2020scores(Complete).csv")
+
+row.names(esg2020)<-esg2020$Ticker
+
+esg2020 <- esg2020[!rownames(esg2020) %in% c("VMW","NLOK"), ]
+
+#S-Score < S-Score Mean
+E_Port2020<-esg2020[esg2020$Sweighted<mean(esg2020$Sweighted),]
+
+#G-Score < G-Score Mean
+E_Port2020<-E_Port2020[E_Port2020$Gweighted<mean(E_Port2020$Gweighted),]
+
+#Sort by E-Score
+E_Port2020<-E_Port2020[order(E_Port2020$Eweighted),]
+
+#Take top n=10 by E-Score
+E_Port2020<- last(E_Port2020,20)
+
+
+#E-Score < E-Score Mean
+S_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#G-Score < G-Score Mean
+S_Port2020<-S_Port2020[S_Port2020$Gweighted<mean(S_Port2020$Gweighted),]
+
+#Sort by E-Score
+S_Port2020<-S_Port2020[order(S_Port2020$Sweighted),]
+
+#Take top n=10 by E-Score
+S_Port2020<- last(S_Port2020,20)
+
+
+###Make G Portfolio###
+#E-Score < E-Score Mean
+G_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#S-Score < S-Score Mean
+G_Port2020<-G_Port2020[G_Port2020$Sweighted<mean(G_Port2020$Sweighted),]
+
+#Sort by E-Score
+G_Port2020<-G_Port2020[order(G_Port2020$Gweighted),]
+
+#Take top n=10 by E-Score
+G_Port2020<- last(G_Port2020,20)
+
+Ports2020<-rbind(E_Port2020,rep("",11),S_Port2020,rep("",11),G_Port2020)
+#getSymbols(Ports2020$Ticker,from="2020-01-01",to="2021-01-01")
+
+
+
+write.csv(Ports2020,"/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2020Ports(20).csv", row.names = FALSE)
+```
+
+
+
+```{r}
+
+esg2020<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/CompleteData/2022scores(Complete).csv")
+
+row.names(esg2020)<-esg2020$Ticker
+
+esg2020 <- esg2020[!rownames(esg2020) %in% c("BLL"), ]
+
+#S-Score < S-Score Mean
+E_Port2020<-esg2020[esg2020$Sweighted<mean(esg2020$Sweighted),]
+
+#G-Score < G-Score Mean
+E_Port2020<-E_Port2020[E_Port2020$Gweighted<mean(E_Port2020$Gweighted),]
+
+#Sort by E-Score
+E_Port2020<-E_Port2020[order(E_Port2020$Eweighted),]
+
+#Take top n=10 by E-Score
+E_Port2020<- last(E_Port2020,20)
+
+
+#E-Score < E-Score Mean
+S_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#G-Score < G-Score Mean
+S_Port2020<-S_Port2020[S_Port2020$Gweighted<mean(S_Port2020$Gweighted),]
+
+#Sort by E-Score
+S_Port2020<-S_Port2020[order(S_Port2020$Sweighted),]
+
+#Take top n=10 by E-Score
+S_Port2020<- last(S_Port2020,20)
+
+
+###Make G Portfolio###
+#E-Score < E-Score Mean
+G_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#S-Score < S-Score Mean
+G_Port2020<-G_Port2020[G_Port2020$Sweighted<mean(G_Port2020$Sweighted),]
+
+#Sort by E-Score
+G_Port2020<-G_Port2020[order(G_Port2020$Gweighted),]
+
+#Take top n=10 by E-Score
+G_Port2020<- last(G_Port2020,20)
+
+Ports2020<-rbind(E_Port2020,rep("",11),S_Port2020,rep("",11),G_Port2020)
+#getSymbols(Ports2020$Ticker,from="2022-01-01",to="2023-01-01")
+
+write.csv(Ports2020,"/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2022Ports(20).csv", row.names = FALSE)
+```
+
+
+
+```{r}
+
+esg2020<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/CompleteData/2023scores(Complete).csv")
+
+row.names(esg2020)<-esg2020$Ticker
+
+esg2020 <- esg2020[!rownames(esg2020) %in% c("VMW"), ]
+
+#S-Score < S-Score Mean
+E_Port2020<-esg2020[esg2020$Sweighted<mean(esg2020$Sweighted),]
+
+#G-Score < G-Score Mean
+E_Port2020<-E_Port2020[E_Port2020$Gweighted<mean(E_Port2020$Gweighted),]
+
+#Sort by E-Score
+E_Port2020<-E_Port2020[order(E_Port2020$Eweighted),]
+
+#Take top n=10 by E-Score
+E_Port2020<- last(E_Port2020,20)
+
+
+#E-Score < E-Score Mean
+S_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#G-Score < G-Score Mean
+S_Port2020<-S_Port2020[S_Port2020$Gweighted<mean(S_Port2020$Gweighted),]
+
+#Sort by E-Score
+S_Port2020<-S_Port2020[order(S_Port2020$Sweighted),]
+
+#Take top n=10 by E-Score
+S_Port2020<- last(S_Port2020,20)
+
+
+###Make G Portfolio###
+#E-Score < E-Score Mean
+G_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#S-Score < S-Score Mean
+G_Port2020<-G_Port2020[G_Port2020$Sweighted<mean(G_Port2020$Sweighted),]
+
+#Sort by E-Score
+G_Port2020<-G_Port2020[order(G_Port2020$Gweighted),]
+
+#Take top n=10 by E-Score
+G_Port2020<- last(G_Port2020,20)
+
+Ports2020<-rbind(E_Port2020,rep("",11),S_Port2020,rep("",11),G_Port2020)
+
+#getSymbols(Ports2020$Ticker,from="2023-01-01",to="2024-01-01")
+
+
+write.csv(Ports2020,"/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/NewestPortfolios/2023Ports(20).csv", row.names = FALSE)
+```
+
+
+
+```{r}
+
+esg2020<-read.csv("/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/CompleteData/2024scores(Complete).csv")
+
+#S-Score < S-Score Mean
+E_Port2020<-esg2020[esg2020$Sweighted<mean(esg2020$Sweighted),]
+
+#G-Score < G-Score Mean
+E_Port2020<-E_Port2020[E_Port2020$Gweighted<mean(E_Port2020$Gweighted),]
+
+#Sort by E-Score
+E_Port2020<-E_Port2020[order(E_Port2020$Eweighted),]
+
+#Take top n=10 by E-Score
+E_Port2020<- last(E_Port2020,20)
+
+
+#E-Score < E-Score Mean
+S_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#G-Score < G-Score Mean
+S_Port2020<-S_Port2020[S_Port2020$Gweighted<mean(S_Port2020$Gweighted),]
+
+#Sort by E-Score
+S_Port2020<-S_Port2020[order(S_Port2020$Sweighted),]
+
+#Take top n=10 by E-Score
+S_Port2020<- last(S_Port2020,20)
+
+
+###Make G Portfolio###
+#E-Score < E-Score Mean
+G_Port2020<-esg2020[esg2020$Eweighted<mean(esg2020$Eweighted),]
+
+#S-Score < S-Score Mean
+G_Port2020<-G_Port2020[G_Port2020$Sweighted<mean(G_Port2020$Sweighted),]
+
+#Sort by E-Score
+G_Port2020<-G_Port2020[order(G_Port2020$Gweighted),]
+
+#Take top n=10 by E-Score
+G_Port2020<- last(G_Port2020,20)
+
+Ports2020<-rbind(E_Port2020,rep("",11),S_Port2020,rep("",11),G_Port2020)
+#getSymbols(Ports2020$Ticker,from="2024-01-01",to="2025-01-01")
+
+write.csv(Ports2020,"/Users/andrew/Documents/SCHOOL/2025/Senior D/Newest Work/CompleteData/2024Ports(20).csv", row.names = FALSE)
+```
+
